@@ -43,7 +43,11 @@ test("pins and traces an allowed local HTTP endpoint without returning its body"
   const directory = await mkdtemp(path.join(tmpdir(), "kk-mcp-network-test-"));
   await mkdir(path.join(directory, "state"));
   const server = http.createServer((_request, response) => {
-    response.writeHead(200, { "content-type": "text/plain", "x-secret": "never-return" });
+    response.writeHead(200, {
+      "content-type": "text/plain",
+      connection: "close",
+      "x-secret": "never-return",
+    });
     response.end("private response body");
   });
   await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
