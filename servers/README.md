@@ -17,15 +17,19 @@
 
 ## 开始使用
 
-要求 Bun 1.4 和 Node.js 22.13 或更高版本。请在仓库根目录执行以下命令。
+使用发行包时，下载对应版本的 ZIP 与校验清单，核对 ZIP 的 SHA-256 后解压。每个 Server 可用 Node.js 22.13+ 或 Bun 1.4+ 启动。开发者从源码运行时先在源码根目录执行 `bun install` 和 `bun run check`，生成相同的 `servers/<name>/dist/` 目录布局。
 
-```bash
-bun install
-bun run check
-cp examples/config/kk-mcp.config.example.json /absolute/path/to/kk-mcp.config.json
+首次连接可使用下面的最小配置。将两个路径替换为本机绝对路径，工作区目录应已存在。需要启用某个 Server 的可选功能时，再从 `examples/config/kk-mcp.config.example.json` 查找对应配置。
+
+```json
+{
+  "version": 1,
+  "stateDir": "/absolute/path/to/state",
+  "roots": [{ "id": "projects", "path": "/absolute/path/to/workspace" }]
+}
 ```
 
-编辑配置中的所有绝对路径后，用同一份构建产物选择任一运行时：
+从解包目录或构建后的源码根目录选择任一运行时启动。
 
 ```bash
 node servers/workspace/dist/cli.mjs --config /absolute/path/to/kk-mcp.config.json
@@ -33,6 +37,8 @@ bun servers/workspace/dist/cli.mjs --config /absolute/path/to/kk-mcp.config.json
 ```
 
 CLI 只接受显式绝对 `--config`。STDIO stdout 专用于 MCP 协议，日志写入 stderr。
+
+首次配置时可在终端给同一命令加上 `--check-config`，检查配置结构和工作区目录。检查会直接退出，成功时退出码为 0，无需启动 MCP Server 或创建状态目录。配置到客户端时去掉该参数，连接后调用 `get_capabilities` 确认 Server 已就绪。
 
 ## 文档
 

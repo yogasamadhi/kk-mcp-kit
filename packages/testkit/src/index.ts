@@ -15,7 +15,7 @@ export async function connectStdio(
   const stderr: string[] = [];
   const transport = new StdioClientTransport({ command, args, cwd, stderr: "pipe" });
   transport.stderr?.on("data", (chunk: Buffer) => stderr.push(chunk.toString("utf8")));
-  const client = new Client({ name: "kk-mcp-kit-testkit", version: "0.1.0" });
+  const client = new Client({ name: "kk-mcp-kit-testkit", version: "0.2.0" });
   await client.connect(transport);
   return { client, transport, stderr };
 }

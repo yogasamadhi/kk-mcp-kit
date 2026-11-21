@@ -302,7 +302,10 @@ function validateAbsolutePaths(config: KkConfig): void {
   }
 }
 
-export async function loadConfig(configPath: string): Promise<KkConfig> {
+export async function loadConfig(
+  configPath: string,
+  { createStateDir = true }: { createStateDir?: boolean } = {},
+): Promise<KkConfig> {
   if (!path.isAbsolute(configPath)) {
     throw new KkError("CONFIG_ERROR", "--config must be an absolute path");
   }
@@ -322,6 +325,6 @@ export async function loadConfig(configPath: string): Promise<KkConfig> {
     });
   }
   validateAbsolutePaths(parsed.data);
-  await mkdir(parsed.data.stateDir, { recursive: true, mode: 0o700 });
+  if (createStateDir) await mkdir(parsed.data.stateDir, { recursive: true, mode: 0o700 });
   return parsed.data;
 }

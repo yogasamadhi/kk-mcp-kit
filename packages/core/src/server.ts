@@ -6,7 +6,7 @@ import { invokeTool, success } from "./result.js";
 import { EmptyInputSchema, StandardOutputSchema } from "./schemas.js";
 
 export function createMcpServer(name: string, instructions: string): McpServer {
-  return new McpServer({ name: `kk-mcp-${name}`, version: "0.1.0" }, { instructions });
+  return new McpServer({ name: `kk-mcp-${name}`, version: "0.2.0" }, { instructions });
 }
 
 export function requireCapability(enabled: boolean, configKey: string): void {

@@ -1,9 +1,11 @@
-import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { spawnSync } from "node:child_process";
+import { lstat, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { connectStdio } from "../packages/testkit/src/index.js";
 
 const repositoryRoot = path.resolve(import.meta.dirname, "..");
+const artifactRoot = process.argv[2] ? path.resolve(process.argv[2]) : repositoryRoot;
 const servers: Record<string, string[]> = {
   workspace: [
     "discover_repositories",
@@ -99,16 +101,59 @@ try {
     JSON.stringify({
       version: 1,
       stateDir: path.join(directory, "state"),
-      roots: [{ id: "kit", path: repositoryRoot }],
+      roots: [{ id: "kit", path: directory }],
     }),
   );
 
   for (const runtime of ["node", "bun"] as const) {
     const command =
       runtime === "node" ? (process.env.NODE_BINARY ?? "node") : (process.env.BUN_BINARY ?? "bun");
+    const workspaceCli = path.join(artifactRoot, "servers", "workspace", "dist", "cli.mjs");
+    const checkPath = path.join(directory, `check-${runtime}.json`);
+    const checkState = path.join(directory, `check-${runtime}-state`);
+    const checkConfig = {
+      version: 1,
+      stateDir: checkState,
+      roots: [{ id: "kit", path: directory }],
+    };
+    await writeFile(checkPath, JSON.stringify(checkConfig));
+    const check = spawnSync(command, [workspaceCli, "--config", checkPath, "--check-config"], {
+      cwd: directory,
+      encoding: "utf8",
+      timeout: 10_000,
+    });
+    assert(
+      check.status === 0 && check.stdout.includes("Configuration valid"),
+      `${runtime}: config check failed`,
+    );
+    const stateCreated = await lstat(checkState).then(
+      () => true,
+      (error) => {
+        if (error.code !== "ENOENT") throw error;
+        return false;
+      },
+    );
+    assert(!stateCreated, `${runtime}: config check created a state directory`);
+    await writeFile(
+      checkPath,
+      JSON.stringify({
+        ...checkConfig,
+        roots: [{ id: "kit", path: path.join(directory, "nonexistent-root") }],
+      }),
+    );
+    const invalid = spawnSync(command, [workspaceCli, "--config", checkPath, "--check-config"], {
+      cwd: directory,
+      encoding: "utf8",
+      timeout: 10_000,
+    });
+    assert(
+      invalid.status === 1 && invalid.stderr.includes("CONFIG_ERROR"),
+      `${runtime}: unknown root passed config check`,
+    );
+
     for (const [serverName, expectedTools] of Object.entries(servers)) {
-      const cli = path.join(repositoryRoot, "servers", serverName, "dist", "cli.mjs");
-      const connection = await connectStdio(command, [cli, "--config", configPath], repositoryRoot);
+      const cli = path.join(artifactRoot, "servers", serverName, "dist", "cli.mjs");
+      const connection = await connectStdio(command, [cli, "--config", configPath], directory);
       try {
         const listed = await connection.client.listTools();
         const actual = listed.tools.map((tool) => tool.name).sort();
@@ -158,7 +203,9 @@ try {
       }
     }
   }
-  console.error("Node and Bun STDIO protocol smoke tests passed for all 7 servers.");
+  console.error(
+    `Node and Bun STDIO protocol smoke tests passed for all ${Object.keys(servers).length} servers.`,
+  );
 } finally {
   await rm(directory, { recursive: true, force: true });
 }
