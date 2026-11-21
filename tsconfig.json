@@ -1,0 +1,15 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/core" },
+    { "path": "packages/testkit" },
+    { "path": "servers/workspace" },
+    { "path": "servers/git-guardian" },
+    { "path": "servers/runtime-observer" },
+    { "path": "servers/project-memory" },
+    { "path": "servers/build-evidence" },
+    { "path": "servers/desktop-lab" },
+    { "path": "servers/network-forensics" },
+    { "path": "tooling" }
+  ]
+}

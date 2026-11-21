@@ -1,0 +1,98 @@
+{
+  "version": 1,
+  "stateDir": "/absolute/path/to/.kk-mcp-state",
+  "roots": [
+    {
+      "id": "projects",
+      "path": "/absolute/path/to/projects",
+      "maxDepth": 8
+    }
+  ],
+  "limits": {
+    "defaultTimeoutMs": 30000,
+    "maxOutputBytes": 262144,
+    "maxArtifactBytes": 10485760,
+    "maxItems": 500,
+    "planTtlMs": 300000
+  },
+  "audit": {
+    "enabled": true,
+    "redactionPatterns": []
+  },
+  "capabilities": {
+    "gitGuardian": { "applyVendorSync": false },
+    "runtimeObserver": { "stopProcess": false },
+    "projectMemory": { "write": false, "import": false },
+    "buildEvidence": { "run": false },
+    "desktopLab": { "launch": false, "stop": false, "capture": false },
+    "networkForensics": { "activeProbe": false }
+  },
+  "servers": {
+    "workspace": {
+      "ignoredDirectories": [".git", "node_modules", "dist", "build", "target"]
+    },
+    "gitGuardian": {
+      "vendors": [
+        {
+          "id": "example-vendor",
+          "repository": { "rootId": "projects", "relativePath": "example" },
+          "path": "vendor/example",
+          "lockFile": "vendor-lock.json",
+          "remote": "origin"
+        }
+      ]
+    },
+    "runtimeObserver": {
+      "services": [
+        {
+          "id": "example-web",
+          "name": "Example web app",
+          "repository": { "rootId": "projects", "relativePath": "example" },
+          "executable": "/absolute/path/to/example-web",
+          "processMatch": "example-web",
+          "healthUrl": "http://localhost:3000/health",
+          "logPaths": ["logs/development.log"]
+        }
+      ]
+    },
+    "projectMemory": {
+      "importRoots": ["/absolute/path/to/approved/imports"]
+    },
+    "buildEvidence": {
+      "profiles": [
+        {
+          "id": "example-check",
+          "repository": { "rootId": "projects", "relativePath": "example" },
+          "command": "bun",
+          "args": ["run", "check"],
+          "timeoutMs": 1800000,
+          "environmentAllowlist": ["CI"],
+          "parser": "junit",
+          "resultPaths": ["reports/junit.xml"],
+          "artifactGlobs": ["dist/**/*"]
+        }
+      ]
+    },
+    "desktopLab": {
+      "apps": [
+        {
+          "id": "example-app",
+          "name": "Example App",
+          "executable": "/absolute/path/to/Example App",
+          "args": [],
+          "processMatch": "Example App",
+          "logPaths": [],
+          "crashPaths": []
+        }
+      ]
+    },
+    "networkForensics": {
+      "allowedHosts": ["localhost", "127.0.0.1", "::1", "*.example.internal"],
+      "profiles": [
+        { "id": "auto", "family": "auto" },
+        { "id": "ipv4", "family": "ipv4" },
+        { "id": "ipv6", "family": "ipv6" }
+      ]
+    }
+  }
+}

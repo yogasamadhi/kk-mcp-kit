@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.types/
+coverage/
+*.tsbuildinfo
+.DS_Store
+.kk-mcp-state/
+test-results/

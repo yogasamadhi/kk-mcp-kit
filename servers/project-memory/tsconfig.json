@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "../../.types/project-memory",
+    "tsBuildInfoFile": "../../.types/project-memory.tsbuildinfo"
+  },
+  "references": [{ "path": "../../packages/core" }],
+  "include": ["src/**/*.ts"]
+}

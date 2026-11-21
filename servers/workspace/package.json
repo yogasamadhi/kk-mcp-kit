@@ -1,0 +1,22 @@
+{
+  "name": "@kk-mcp-kit/workspace",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "kk-mcp-workspace": "./dist/cli.mjs"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "dependencies": {
+    "@kk-mcp-kit/core": "workspace:*",
+    "@modelcontextprotocol/server": "2.0.0",
+    "fast-xml-parser": "5.11.0",
+    "smol-toml": "1.8.0",
+    "zod": "4.4.3"
+  }
+}

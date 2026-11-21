@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "../../.types/desktop-lab",
+    "tsBuildInfoFile": "../../.types/desktop-lab.tsbuildinfo"
+  },
+  "references": [{ "path": "../../packages/core" }],
+  "include": ["src/**/*.ts"]
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "../../.types/build-evidence",
+    "tsBuildInfoFile": "../../.types/build-evidence.tsbuildinfo"
+  },
+  "references": [{ "path": "../../packages/core" }],
+  "include": ["src/**/*.ts"]
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "../../.types/network-forensics",
+    "tsBuildInfoFile": "../../.types/network-forensics.tsbuildinfo"
+  },
+  "references": [{ "path": "../../packages/core" }],
+  "include": ["src/**/*.ts"]
+}

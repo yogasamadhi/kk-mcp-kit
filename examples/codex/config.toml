@@ -1,0 +1,30 @@
+# Copy these entries into Codex config.toml and replace both absolute path placeholders.
+# Every server receives the same explicit config file but starts as an independent STDIO process.
+
+[mcp_servers.kk-workspace]
+command = "node"
+args = ["/ABSOLUTE/PATH/TO/kk-mcp-kit/servers/workspace/dist/cli.mjs", "--config", "/ABSOLUTE/PATH/TO/kk-mcp.config.json"]
+
+[mcp_servers.kk-git-guardian]
+command = "node"
+args = ["/ABSOLUTE/PATH/TO/kk-mcp-kit/servers/git-guardian/dist/cli.mjs", "--config", "/ABSOLUTE/PATH/TO/kk-mcp.config.json"]
+
+[mcp_servers.kk-runtime-observer]
+command = "node"
+args = ["/ABSOLUTE/PATH/TO/kk-mcp-kit/servers/runtime-observer/dist/cli.mjs", "--config", "/ABSOLUTE/PATH/TO/kk-mcp.config.json"]
+
+[mcp_servers.kk-project-memory]
+command = "node"
+args = ["/ABSOLUTE/PATH/TO/kk-mcp-kit/servers/project-memory/dist/cli.mjs", "--config", "/ABSOLUTE/PATH/TO/kk-mcp.config.json"]
+
+[mcp_servers.kk-build-evidence]
+command = "node"
+args = ["/ABSOLUTE/PATH/TO/kk-mcp-kit/servers/build-evidence/dist/cli.mjs", "--config", "/ABSOLUTE/PATH/TO/kk-mcp.config.json"]
+
+[mcp_servers.kk-desktop-lab]
+command = "node"
+args = ["/ABSOLUTE/PATH/TO/kk-mcp-kit/servers/desktop-lab/dist/cli.mjs", "--config", "/ABSOLUTE/PATH/TO/kk-mcp.config.json"]
+
+[mcp_servers.kk-network-forensics]
+command = "node"
+args = ["/ABSOLUTE/PATH/TO/kk-mcp-kit/servers/network-forensics/dist/cli.mjs", "--config", "/ABSOLUTE/PATH/TO/kk-mcp.config.json"]

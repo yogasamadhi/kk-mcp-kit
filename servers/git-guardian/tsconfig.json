@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "../../.types/git-guardian",
+    "tsBuildInfoFile": "../../.types/git-guardian.tsbuildinfo"
+  },
+  "references": [{ "path": "../../packages/core" }],
+  "include": ["src/**/*.ts"]
+}

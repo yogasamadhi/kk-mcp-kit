@@ -1,0 +1,20 @@
+{
+  "name": "@kk-mcp-kit/runtime-observer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "kk-mcp-runtime-observer": "./dist/cli.mjs"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "dependencies": {
+    "@kk-mcp-kit/core": "workspace:*",
+    "@modelcontextprotocol/server": "2.0.0",
+    "zod": "4.4.3"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@kk-mcp-kit/testkit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@kk-mcp-kit/core": "workspace:*",
+    "@modelcontextprotocol/client": "2.0.0"
+  }
+}

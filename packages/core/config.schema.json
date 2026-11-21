@@ -1,0 +1,264 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/yogasamadhi/kk-mcp-kit/config.schema.json",
+  "title": "kk-mcp-kit configuration",
+  "$comment": "stateDir, roots, importRoots, desktop logPaths, and crashPaths are checked as absolute paths at runtime.",
+  "type": "object",
+  "required": ["version", "stateDir", "roots"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "const": 1 },
+    "stateDir": { "type": "string", "minLength": 1 },
+    "roots": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/root" }
+    },
+    "limits": { "$ref": "#/$defs/limits" },
+    "audit": { "$ref": "#/$defs/audit" },
+    "capabilities": { "$ref": "#/$defs/capabilities" },
+    "servers": { "$ref": "#/$defs/servers" }
+  },
+  "$defs": {
+    "identifier": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]*$" },
+    "repository": {
+      "type": "object",
+      "required": ["rootId"],
+      "additionalProperties": false,
+      "properties": {
+        "rootId": { "type": "string", "minLength": 1 },
+        "relativePath": { "type": "string", "default": "." }
+      }
+    },
+    "root": {
+      "type": "object",
+      "required": ["id", "path"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "path": { "type": "string", "minLength": 1 },
+        "maxDepth": { "type": "integer", "minimum": 1, "maximum": 32, "default": 8 }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "defaultTimeoutMs": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 300000,
+          "default": 30000
+        },
+        "maxOutputBytes": {
+          "type": "integer",
+          "minimum": 1024,
+          "maximum": 16777216,
+          "default": 262144
+        },
+        "maxArtifactBytes": {
+          "type": "integer",
+          "minimum": 1024,
+          "maximum": 104857600,
+          "default": 10485760
+        },
+        "maxItems": { "type": "integer", "minimum": 1, "maximum": 10000, "default": 500 },
+        "planTtlMs": { "type": "integer", "minimum": 10000, "maximum": 1800000, "default": 300000 }
+      }
+    },
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean", "default": true },
+        "redactionPatterns": { "type": "array", "items": { "type": "string" }, "default": [] }
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "gitGuardian": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "applyVendorSync": { "type": "boolean", "default": false } }
+        },
+        "runtimeObserver": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "stopProcess": { "type": "boolean", "default": false } }
+        },
+        "projectMemory": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "write": { "type": "boolean", "default": false },
+            "import": { "type": "boolean", "default": false }
+          }
+        },
+        "buildEvidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "run": { "type": "boolean", "default": false } }
+        },
+        "desktopLab": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "launch": { "type": "boolean", "default": false },
+            "stop": { "type": "boolean", "default": false },
+            "capture": { "type": "boolean", "default": false }
+          }
+        },
+        "networkForensics": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "activeProbe": { "type": "boolean", "default": false } }
+        }
+      }
+    },
+    "vendor": {
+      "type": "object",
+      "required": ["id", "repository", "path"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "repository": { "$ref": "#/$defs/repository" },
+        "path": { "type": "string", "minLength": 1 },
+        "lockFile": { "type": "string", "default": "vendor-lock.json" },
+        "remote": { "type": "string", "default": "origin" },
+        "versionFile": { "type": "string" }
+      }
+    },
+    "service": {
+      "type": "object",
+      "required": ["id", "name"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "repository": { "$ref": "#/$defs/repository" },
+        "executable": { "type": "string" },
+        "processMatch": { "type": "string" },
+        "pid": { "type": "integer", "minimum": 1 },
+        "pidFile": { "type": "string" },
+        "healthUrl": { "type": "string", "format": "uri" },
+        "logPaths": { "type": "array", "items": { "type": "string" }, "default": [] },
+        "composeService": { "type": "string" }
+      }
+    },
+    "verificationProfile": {
+      "type": "object",
+      "required": ["id", "repository", "command"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "repository": { "$ref": "#/$defs/repository" },
+        "command": { "type": "string", "minLength": 1 },
+        "args": { "type": "array", "items": { "type": "string" }, "default": [] },
+        "timeoutMs": { "type": "integer", "minimum": 100, "maximum": 1800000, "default": 600000 },
+        "environmentAllowlist": { "type": "array", "items": { "type": "string" }, "default": [] },
+        "parser": {
+          "enum": ["generic", "junit", "go-json", "cargo", "xcresult"],
+          "default": "generic"
+        },
+        "resultPaths": { "type": "array", "items": { "type": "string" }, "default": [] },
+        "artifactGlobs": { "type": "array", "items": { "type": "string" }, "default": [] }
+      }
+    },
+    "desktopApp": {
+      "type": "object",
+      "required": ["id", "name", "executable", "processMatch"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "executable": { "type": "string", "minLength": 1 },
+        "args": { "type": "array", "items": { "type": "string" }, "default": [] },
+        "processMatch": { "type": "string", "minLength": 1 },
+        "bundleId": { "type": "string" },
+        "logPaths": { "type": "array", "items": { "type": "string" }, "default": [] },
+        "crashPaths": { "type": "array", "items": { "type": "string" }, "default": [] },
+        "windowsEventProvider": { "type": "string" }
+      }
+    },
+    "networkProfile": {
+      "type": "object",
+      "required": ["id"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "proxyUrl": { "type": "string", "format": "uri" },
+        "family": { "enum": ["auto", "ipv4", "ipv6"], "default": "auto" }
+      }
+    },
+    "servers": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "workspace": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ignoredDirectories": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "gitGuardian": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "vendors": { "type": "array", "items": { "$ref": "#/$defs/vendor" }, "default": [] }
+          }
+        },
+        "runtimeObserver": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "services": { "type": "array", "items": { "$ref": "#/$defs/service" }, "default": [] }
+          }
+        },
+        "projectMemory": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "importRoots": { "type": "array", "items": { "type": "string" }, "default": [] }
+          }
+        },
+        "buildEvidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "profiles": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/verificationProfile" },
+              "default": []
+            }
+          }
+        },
+        "desktopLab": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "apps": { "type": "array", "items": { "$ref": "#/$defs/desktopApp" }, "default": [] }
+          }
+        },
+        "networkForensics": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "allowedHosts": {
+              "type": "array",
+              "items": { "type": "string" },
+              "default": ["localhost", "127.0.0.1", "::1"]
+            },
+            "profiles": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/networkProfile" },
+              "default": []
+            }
+          }
+        }
+      }
+    }
+  }
+}

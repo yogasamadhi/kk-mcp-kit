@@ -1,0 +1,32 @@
+{
+  "name": "kk-mcp-kit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "servers/*"
+  ],
+  "packageManager": "bun@1.4.0",
+  "engines": {
+    "node": ">=22.13.0",
+    "bun": ">=1.4.0"
+  },
+  "scripts": {
+    "build": "bun tooling/build.ts",
+    "clean": "bun tooling/clean.ts",
+    "typecheck": "tsc -b --pretty",
+    "test": "bun test",
+    "test:e2e": "bun tooling/runtime-smoke-test.ts",
+    "check:runtime": "bun tooling/check-runtime-source.ts",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "check": "bun run lint && bun run typecheck && bun run check:runtime && bun run test && bun run build && bun run test:e2e"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.10",
+    "@types/bun": "1.4.0",
+    "@types/node": "22.20.1",
+    "typescript": "7.0.2"
+  }
+}
